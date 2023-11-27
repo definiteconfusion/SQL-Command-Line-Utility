@@ -6,7 +6,9 @@ def cmd(command:str, database:str):
         cursor = init.cursor()
         cursor.execute(f"{command}")
         if "SELECT" in command:
-            type_result = str(cursor.fetchall())
+            type_result = cursor.fetchall()
+        elif "PRAGMA" in command:
+            type_result = cursor.fetchall()
         else:
             type_result = "ENDED IN ELSE"
             init.commit()

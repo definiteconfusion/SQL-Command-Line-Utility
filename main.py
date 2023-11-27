@@ -11,6 +11,9 @@ with open("data.json", 'r') as json_file:
 @click.group()
 def main():
     pass
+
+#
+# -- CD COMMAND
 @main.command(help='Navigates to a Directory')
 @click.argument('path')
 def cd(path):
@@ -18,6 +21,9 @@ def cd(path):
         scaffold.datachache(path)
     else:
         structs.error("ERROR -- Specified Path Not Found")
+        
+#
+# -- CONSOLE COMMAND
 @main.command(help='Enters into SQL Console')
 @click.option('--read', '-r', is_flag=True, help='Makes Table Request Read Only')
 def console(read):
@@ -40,7 +46,27 @@ def console(read):
             else:
                 structs.error("Error -- No Database Found at the Specified Path -- Type 'cd' to specify a new path")
                 break
-            
+
+#
+# -- VISUAL COMMAND
+@main.command()
+@click.argument('elements')
+@click.argument('table')
+def visual(elements, table):
+    dataCache = scaffold.initsetup()
+    if elements == 'table':
+        dbname = scaffold.databaseLocator(dataCache["path"])
+        command = f"SELECT COUNT(*) FROM {table}"
+        retstate = sqlutil.cmd(command, dbname[0])
+        rngLen = int(retstate.strip("[").strip("]").strip("(").strip(")").strip(", "))
+                
+        
+        # rowCache = []
+        # rowLst = []
+        # rowStr = ""
+        # for rows in range(rngLen):
+
+
             
 if __name__ == '__main__':
         main()
