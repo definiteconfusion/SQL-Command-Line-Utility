@@ -10,4 +10,4 @@ python main.py cd {PATH}
 python main.py console
 ```
 
-Current Version: 1.0
+Current Version: 1.1
