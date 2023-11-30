@@ -1,5 +1,7 @@
 import scaffold
 import sqlutil
+import scaffold
+import sqlutil
 def visual(elements, table):
     dataCache = scaffold.initsetup()
     if elements == 'table':
@@ -8,27 +10,23 @@ def visual(elements, table):
         retstate = sqlutil.cmd(command, dbname[0])
         rngLen = retstate[0][0]
         command = f"PRAGMA table_info({table})"
-        numColums = len(sqlutil.cmd(command, dbname[0]))
-        # ds = sqlutil.cmd(command, dbname[0])[0][1]
-        rowCache = []
+        columns_info = sqlutil.cmd(command, dbname[0])
+        numColumns = len(columns_info)
+        column_names = [column[1] for column in columns_info]
+        
         rowLst = []
-        rowStr = ""
-        for columNameAppend in range(numColums):
-            rowCache.append(sqlutil.cmd(command, dbname[0])[columNameAppend][1])
         for rows in range(rngLen + 1):
-            itmCmd = f"SELECT {', '.join(str(column) for column in rowCache)} FROM {table} WHERE rowid = {rows + 1}"
+            rowStr = ""
+            itmCmd = f"SELECT {', '.join(column for column in column_names)} FROM {table} WHERE rowid = {rows}"
             response = sqlutil.cmd(itmCmd, dbname[0])
-            for colums in range(numColums):
+            for columns in range(numColumns):
                 if rows == 0:
-                    rowStr = rowStr + rowCache[colums] + " | "
-                    rowLst.append(rowStr)
-                    rowStr = ""
+                    rowStr += column_names[columns] + " --|-- "
                 else:
-                    print(rowLst)
-                    rowStr = rowStr + response[0][colums] + " | "
-                    rowLst.append(rowStr)
-                    rowStr = ""
-                    
-        for rowPrn in range(len(rowLst)):
-            print(rowLst[rowPrn])
+                    rowStr += str(response[0][columns]) + " --|-- "
+            rowLst.append(rowStr)
+            
+        for row in rowLst:
+            print(row)
+
 visual("table", "assets")
